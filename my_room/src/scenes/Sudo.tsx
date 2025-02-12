@@ -1,36 +1,32 @@
-import React from 'react';
-import * as THREE from 'three';
-import { useEffect, useState } from 'react';
-import { useGLTF } from '@react-three/drei';
-import { useControls } from 'leva';
-import { Color } from 'three';
-import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
-import { useSpring, a } from '@react-spring/three';
-import { IGLTF } from './interface';
+import * as THREE from 'three'
+import { useEffect } from 'react'
+import { useGLTF } from '@react-three/drei'
+import { useSpring, a } from '@react-spring/three'
+import { IGLTF } from './interface'
 
 export function Sudo() {
   const { nodes, materials } = useGLTF(
     './models/room-draco.glb'
-  ) as unknown as IGLTF;
+  ) as unknown as IGLTF
   const [spring, api] = useSpring(
     () => ({ rotation: [Math.PI / 2, 0, 0.29], config: { friction: 40 } }),
     []
-  );
+  )
   useEffect(() => {
-    let timeout: any;
+    let timeout: any
     const wander = () => {
       api.start({
         rotation: [
           Math.PI / 2 + THREE.MathUtils.randFloatSpread(2) * 0.3,
           0,
-          0.29 + THREE.MathUtils.randFloatSpread(2) * 0.2
-        ]
-      });
-      timeout = setTimeout(wander, (1 + Math.random() * 2) * 800);
-    };
-    wander();
-    return () => clearTimeout(timeout);
-  }, []);
+          0.29 + THREE.MathUtils.randFloatSpread(2) * 0.2,
+        ],
+      })
+      timeout = setTimeout(wander, (1 + Math.random() * 2) * 800)
+    }
+    wander()
+    return () => clearTimeout(timeout)
+  }, [])
   return (
     <>
       <mesh
@@ -46,5 +42,5 @@ export function Sudo() {
         {...spring}
       />
     </>
-  );
+  )
 }

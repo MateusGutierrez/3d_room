@@ -1,17 +1,10 @@
-import React from 'react';
-import * as THREE from 'three';
-import { useEffect, useState } from 'react';
-import { MeshWobbleMaterial, useGLTF } from '@react-three/drei';
-import { useControls } from 'leva';
-import { Color } from 'three';
-import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
-import { useSpring, a } from '@react-spring/three';
-import { IGLTF } from './interface';
+import { MeshWobbleMaterial, useGLTF } from '@react-three/drei'
+import { IGLTF } from './interface'
 
 export function Cactus() {
   const { nodes, materials } = useGLTF(
     './models/room-draco.glb'
-  ) as unknown as IGLTF;
+  ) as unknown as IGLTF
   return (
     <mesh
       geometry={nodes.Cactus.geometry}
@@ -20,5 +13,5 @@ export function Cactus() {
     >
       <MeshWobbleMaterial factor={0.4} map={materials.Cactus.map} />
     </mesh>
-  );
+  )
 }
