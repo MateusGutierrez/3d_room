@@ -1,0 +1,16 @@
+[
+  {
+    "title": "Monitor",
+    "description": "<p>PC</p>",
+    "camPos": {
+      "x": 10,
+      "y": -4,
+      "z": -10
+    },
+    "lookAt": {
+      "x": 10,
+      "y": -4,
+      "z": -3
+    }
+  }
+]

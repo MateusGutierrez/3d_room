@@ -1,5 +1,10 @@
+import { Provider } from './provider/Provider'
 import Room from './scenes'
 
 export default function App() {
-  return <Room />
+  return (
+    <Provider>
+      <Room />
+    </Provider>
+  )
 }
