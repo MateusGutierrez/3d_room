@@ -1,21 +1,36 @@
 body,
 html,
 #root {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
+}
+
+.wrapper {
+  width: 1050px;
+  height: 500px;
+  border: 2px solid black;
+  box-shadow:
+    0 0 20px rgba(0, 0, 0, 0.5),
+    /* Sombra externa */ 0 0 40px rgba(0, 0, 0, 0.3) inset; /* Sombra interna para dar profundidade */
   overflow: hidden;
 }
 
-#root {
-  filter: saturate(1.15) hue-rotate(345deg);
+iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 
-#root * {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.iframetest iframe {
+  width: 1024px;
+  height: 678px;
+  border: none;
+  border-radius: 20px;
 }
 
 @keyframes fade-in {

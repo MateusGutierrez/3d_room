@@ -1,16 +1,29 @@
-import { Html, useGLTF } from '@react-three/drei'
-import { IframeMonitor } from '../components/iFrameMonitor'
+import {
+  Html,
+  PresentationControls,
+  useGLTF,
+  useTexture,
+} from '@react-three/drei'
+import { Dispatch, SetStateAction, useEffect } from 'react'
 import { useThree } from '@react-three/fiber'
-import { useEffect, useRef, useState } from 'react'
+import * as THREE from 'three'
 interface Props {
+  isZoomed: boolean
+  setIsZoomed: Dispatch<SetStateAction<boolean>>
   setHovered: (value: boolean) => void
   hovered: boolean
-  isZoomed: boolean
-  setIsZoomed: (value: boolean) => void
 }
 
 export function Monitor({ setHovered, hovered, setIsZoomed, isZoomed }: Props) {
   const { nodes, materials } = useGLTF('./models/room-draco.glb') as any
+
+  // Carrega a textura da imagem
+  const screenTexture = useTexture('./img/preview.png') // Substitua pelo caminho da sua imagem
+
+  useEffect(() => {
+    screenTexture.anisotropy = 16
+    screenTexture.repeat.set(6, 2)
+  }, [screenTexture])
 
   return (
     <group
@@ -28,33 +41,30 @@ export function Monitor({ setHovered, hovered, setIsZoomed, isZoomed }: Props) {
         position={[-0.38, 0.69, 0.62]}
         rotation={[Math.PI / 2, -Math.PI / 9, 0]}
         scale={[1, 1, 1]} // 95% largura, 90% altura, 100% profundidade
-      />
-      {/* Iframe na tela do monitor */}
-      {isZoomed && (
+      >
+        {!isZoomed && <meshStandardMaterial map={screenTexture} />}
+      </mesh>
+      <PresentationControls>
         <Html
           transform
-          position={[-5.95, -1, 4.5]} // Ajuste para encaixar na tela
+          position={[0.204, 0.855, 0]} // Ajuste para encaixar na tela
           rotation={[Math.PI / 40, -Math.PI / 1, 0]} // Alinhado com a tela
-          scale={0.5} // Ajuste para caber na tela do monitor
+          scale={0.172} // Ajuste para caber na tela do monitor
+          distanceFactor={1}
+          wrapperClass='wrapper'
+          occlude
         >
-          <div
-            style={{
-              width: '1050px',
-              height: '500px',
-              border: '2px solid black',
-              zIndex: '10000',
-              borderRadius: '16px',
-            }}
-          >
-            <iframe
-              src='https://os.henryheffernan.com/'
-              width='100%'
-              height='100%'
-              style={{ border: 'none' }}
-            />
-          </div>
+          {isZoomed && (
+            <div className='wrapper' onPointerDown={(e) => e.stopPropagation()}>
+              <iframe
+                src='https://os.henryheffernan.com/'
+                width='100%'
+                height='100%'
+              />
+            </div>
+          )}
         </Html>
-      )}
+      </PresentationControls>
     </group>
   )
 }

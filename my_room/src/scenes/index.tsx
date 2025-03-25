@@ -96,7 +96,7 @@ export default function Room() {
       camera={{ position: [10, -4, -50] }}
       onPointerMissed={() => setIsZoomed(false)} // Clica fora e reseta
     >
-      <ambientLight intensity={Math.PI / 2} />
+      <ambientLight intensity={0.5} />
       <CameraController
         isZoomed={isZoomed}
         setIsZoomed={setIsZoomed}
