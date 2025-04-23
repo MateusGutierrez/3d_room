@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { TbMusic, TbMusicOff } from "react-icons/tb";
 
 export function BackgroundMusic() {
   const [isPlaying, setIsPlaying] = useState(true)
@@ -6,6 +7,7 @@ export function BackgroundMusic() {
 
   useEffect(() => {
     if (audioRef.current) {
+      audioRef.current.volume = 0.1
       if (isPlaying) {
         audioRef.current
           .play()
@@ -19,28 +21,16 @@ export function BackgroundMusic() {
   return (
     <>
       {/* Elemento de áudio */}
-      <audio ref={audioRef} loop>
-        <source src='/mp3/fly.mp3' type='audio/mp3' />
+      <audio ref={audioRef} loop >
+        <source src='./mp3/lofi.mp3' type='audio/mp3'/>
       </audio>
 
       {/* Botão no canto superior direito */}
       <button
         onClick={() => setIsPlaying(!isPlaying)}
-        style={{
-          position: 'absolute',
-          zIndex: 99999,
-          top: '20px',
-          right: '20px',
-          padding: '10px',
-          background: 'rgba(0, 0, 0, 0.7)',
-          color: 'white',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer',
-          fontSize: '16px',
-        }}
+        className='music_button'
       >
-        {isPlaying ? '🔊 Desligar Música' : '🔇 Ligar Música'}
+        {isPlaying ? (<TbMusic className='icon_sound'/>) : (<TbMusicOff className='icon_sound' />)}
       </button>
     </>
   )

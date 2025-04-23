@@ -5,7 +5,7 @@ import Room from './scenes'
 export default function App() {
   return (
     <Provider>
-      {/* <BackgroundMusic/> */}
+      <BackgroundMusic/>
       <Room />
     </Provider>
   )
