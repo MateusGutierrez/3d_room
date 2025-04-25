@@ -69,36 +69,64 @@ canvas:active {
 }
 
 .loadingScreen__board {
-  padding: 64px;
+  width: 40%;
+  padding: 30px;
+  min-width: 300px;
   background-color:#211d19;
   border-radius: 24px;
   text-align: center;
   border: 1px solid #36363f;
   transition: opacity 0.4s;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
-
-.loadingScreen__title {
-  font-size: 1rem;
-  color: lightgray;
-  margin: 0;
-  margin-bottom: 8px;
+.typewriter h1 {
+  color: #fff;
+  font-family: monospace;
+  overflow: hidden; /* Ensures the content is not revealed until the animation */
+  border-right: .15em solid #e8560d; /* The typwriter cursor */
+  white-space: nowrap; /* Keeps the content on a single line */
+  margin: 0 auto; /* Gives that scrolling effect as the typing happens */
+  letter-spacing: .15em; /* Adjust as needed */
+  animation: 
+    typing 3.5s steps(30, end),
+    blink-caret .5s step-end infinite;
+  flex-wrap: wrap;
+  @media(max-width: 850px){
+    font-size: 16px
+  }
+}
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: #e8560d }
 }
 
 .loadingScreen__button {
   padding: 8px 32px;
   background-color: rgba(0, 0, 0, 0.24);
   color: white;
-  border: none;
+  border: 1px solid transparent;
   font-weight: bold;
   font-size: 2.5rem;
   border-radius: 8px;
+  width: fit-content;
+  margin: 0 auto;
   transition: background-color 0.4s;
   font-family: "Almendra", serif;
+  @media(max-width: 850px){
+    font-size: 1.5rem
+  }
 }
 
 .loadingScreen__button:hover {
   background-color: rgba(0, 0, 0, 0.42);
   cursor: pointer;
+  border: 1px solid #e8560d;
 }
 
 .loadingScreen__button:disabled {
@@ -159,7 +187,7 @@ canvas:active {
 }
 
 .music_button:hover {
-  background-color: rgb(56, 56, 56);
+  background-color: rgba(0, 0, 0, 0.42);
   border: 1px solid #e8560d;
 }
 
