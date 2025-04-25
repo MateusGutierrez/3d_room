@@ -1,9 +1,9 @@
-import { useFrame } from '@react-three/fiber'
-import TWEEN from '@tweenjs/tween.js'
+import { useFrame } from '@react-three/fiber';
+import TWEEN from '@tweenjs/tween.js';
 
 export function TweenUpdater() {
   useFrame(() => {
-    TWEEN.update()
-  })
-  return null
+    TWEEN.update();
+  });
+  return null;
 }

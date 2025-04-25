@@ -1,10 +1,8 @@
-import { MeshWobbleMaterial, useGLTF } from '@react-three/drei'
-import { IGLTF } from './interface'
+import { MeshWobbleMaterial, useGLTF } from '@react-three/drei';
+import { IGLTF } from './interface';
 
 export function Cactus() {
-  const { nodes, materials } = useGLTF(
-    './models/room-draco.glb'
-  ) as unknown as IGLTF
+  const { nodes, materials } = useGLTF('./models/room-draco.glb') as unknown as IGLTF;
   return (
     <mesh
       geometry={nodes.Cactus.geometry}
@@ -13,5 +11,5 @@ export function Cactus() {
     >
       <MeshWobbleMaterial factor={0.4} map={materials.Cactus.map} />
     </mesh>
-  )
+  );
 }
