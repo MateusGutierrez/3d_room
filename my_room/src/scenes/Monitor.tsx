@@ -1,6 +1,6 @@
 import { Html, PresentationControls, useGLTF, useTexture } from '@react-three/drei';
-import { Dispatch, SetStateAction, useEffect } from 'react';
-import { Loader } from '@react-three/drei';
+import { Dispatch, SetStateAction } from 'react';
+import { IGLTF } from './interface';
 
 interface Props {
   isZoomed: boolean;
@@ -9,8 +9,8 @@ interface Props {
   hovered: boolean;
 }
 
-export function Monitor({ setHovered, hovered, setIsZoomed, isZoomed }: Props) {
-  const { nodes, materials } = useGLTF('./models/room-draco.glb') as any;
+export function Monitor({ setHovered, setIsZoomed, isZoomed }: Props) {
+  const { nodes, materials } = useGLTF('./models/room-draco.glb') as unknown as IGLTF;
 
   // Carrega a textura da imagem
   const screenTexture = useTexture('./img/preview.png'); // Substitua pelo caminho da sua imagem
@@ -49,7 +49,7 @@ export function Monitor({ setHovered, hovered, setIsZoomed, isZoomed }: Props) {
           >
             {isZoomed && (
               <div className="wrapper" onPointerDown={e => e.stopPropagation()}>
-                <iframe src="https://os.henryheffernan.com/" width="100%" height="100%" />
+                <iframe src="https://winxp.vercel.app/" width="100%" height="100%" />
               </div>
             )}
           </Html>

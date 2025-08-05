@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { TbMusic, TbMusicOff } from 'react-icons/tb';
 
 export function BackgroundMusic() {
-  const [isPlaying, setIsPlaying] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
