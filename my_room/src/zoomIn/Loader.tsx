@@ -1,6 +1,6 @@
 interface Props {
-  started: any;
-  onStarted: any;
+  started: boolean;
+  onStarted: () => void;
 }
 
 export const LoadingScreen = ({ started, onStarted }: Props) => {
@@ -10,8 +10,9 @@ export const LoadingScreen = ({ started, onStarted }: Props) => {
         <div className="typewriter">
           <h1>Welcome to my Portfolio!</h1>
         </div>
+        <p className="loadingScreen__subtitle">Explore my interactive 3D workspace</p>
         <button className="loadingScreen__button" onClick={onStarted}>
-          Start
+          Enter
         </button>
       </div>
     </div>
