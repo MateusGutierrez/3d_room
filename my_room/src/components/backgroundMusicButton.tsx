@@ -24,7 +24,11 @@ export function BackgroundMusic() {
       </audio>
 
       {/* Botão no canto superior direito */}
-      <button onClick={() => setIsPlaying(!isPlaying)} className="music_button">
+      <button
+        onClick={() => setIsPlaying(!isPlaying)}
+        className="music_button"
+        aria-label={isPlaying ? 'Mute background music' : 'Play background music'}
+      >
         {isPlaying ? <TbMusic className="icon_sound" /> : <TbMusicOff className="icon_sound" />}
       </button>
     </>

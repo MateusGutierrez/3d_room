@@ -27,13 +27,6 @@ iframe {
   border: none;
 }
 
-.iframetest iframe {
-  width: 1024px;
-  height: 678px;
-  border: none;
-  border-radius: 20px;
-}
-
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -52,196 +45,377 @@ canvas {
 canvas:active {
   cursor: grabbing;
 }
-/* Loading Screen */
-.loadingScreen {
+/* BIOS Boot Screen */
+.bios {
   position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a1614 50%, #0d0d0d 100%);
+  inset: 0;
+  background: #000;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 1s ease-out;
   z-index: 10;
+  transition: opacity 0.8s ease-out;
 }
 
-.loadingScreen__board {
-  position: relative;
-  width: min(500px, 90vw);
-  padding: 48px 40px;
-  background: rgba(20, 18, 16, 0.85);
-  backdrop-filter: blur(20px);
-  border-radius: 24px;
-  text-align: center;
-  border: 1px solid rgba(232, 86, 13, 0.15);
-  box-shadow:
-    0 0 60px rgba(232, 86, 13, 0.08),
-    0 25px 50px -12px rgba(0, 0, 0, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  flex-direction: column;
-  gap: 2.5rem;
-  overflow: hidden;
-}
-
-.loadingScreen__board::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(232, 86, 13, 0.5), transparent);
-}
-
-.loadingScreen__board::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle at center, rgba(232, 86, 13, 0.03) 0%, transparent 50%);
+.bios--started {
+  opacity: 0;
   pointer-events: none;
 }
 
-/* Typewriter Effect */
-.typewriter {
+.bios__screen {
+  width: min(720px, 92vw);
+  height: min(480px, 80vh);
+  background: #000;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 32px;
+  font-family: 'Courier New', 'Lucida Console', monospace;
+  font-size: clamp(0.72rem, 1.4vw, 0.88rem);
+  color: #ccc;
+  line-height: 1.7;
   position: relative;
-  z-index: 1;
-}
-
-.typewriter h1 {
-  color: #fff;
-  font-family: 'SF Mono', 'Fira Code', 'Monaco', monospace;
-  font-size: clamp(1.1rem, 3vw, 1.5rem);
-  font-weight: 500;
   overflow: hidden;
-  border-right: 2px solid #e8560d;
-  white-space: nowrap;
-  margin: 0 auto;
-  letter-spacing: 0.08em;
-  animation:
-    typing 2.5s steps(24, end),
-    blink-caret 0.6s step-end infinite;
-  text-shadow: 0 0 20px rgba(232, 86, 13, 0.3);
 }
 
-@keyframes typing {
+.bios__content {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.bios__content::-webkit-scrollbar {
+  display: none;
+}
+
+.bios__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+
+.bios__title {
+  color: #fff;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+}
+
+.bios__date {
+  color: #666;
+  font-size: 0.8em;
+}
+
+.bios__separator {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 8px 0 12px;
+}
+
+.bios__line {
+  white-space: pre;
+  min-height: 1.7em;
+  animation: bios-line-in 0.15s ease-out;
+}
+
+@keyframes bios-line-in {
   from {
-    width: 0;
+    opacity: 0;
   }
-  to {
-    width: 100%;
-  }
-}
-
-@keyframes blink-caret {
-  from,
-  to {
-    border-color: transparent;
-  }
-  50% {
-    border-color: #e8560d;
-  }
-}
-
-/* Subtitle */
-.loadingScreen__subtitle {
-  position: relative;
-  z-index: 1;
-  color: rgba(255, 255, 255, 0.5);
-  font-family:
-    'Inter',
-    -apple-system,
-    BlinkMacSystemFont,
-    sans-serif;
-  font-size: 0.95rem;
-  font-weight: 400;
-  margin: -1rem 0 0 0;
-  letter-spacing: 0.02em;
-  animation: fadeIn 1s ease 2.5s forwards;
-  opacity: 0;
-}
-
-@keyframes fadeIn {
   to {
     opacity: 1;
   }
 }
 
-/* Start Button */
-.loadingScreen__button {
-  position: relative;
-  z-index: 1;
-  padding: 16px 48px;
-  background: linear-gradient(135deg, rgba(232, 86, 13, 0.15) 0%, rgba(232, 86, 13, 0.05) 100%);
+.bios__line--resource {
+  color: #888;
+}
+
+.bios__line--loading {
+  color: #e8560d;
+  font-weight: bold;
+}
+
+.bios__line--success {
+  color: #4ade80;
+  font-weight: bold;
+}
+
+/* Animated dots: cycling through . .. ... */
+.bios__dots::after {
+  content: '';
+  animation: dotty 1.5s steps(3, end) infinite;
+}
+
+@keyframes dotty {
+  0% {
+    content: '';
+  }
+  33% {
+    content: '.';
+  }
+  66% {
+    content: '..';
+  }
+  100% {
+    content: '...';
+  }
+}
+
+.bios__finished {
+  animation: bios-line-in 0.4s ease-out;
+}
+
+/* Start container */
+.bios__start-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 0 12px;
+  animation: bios-fade-up 0.5s ease-out;
+}
+
+@keyframes bios-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bios__start-prompt {
   color: #fff;
-  border: 1px solid rgba(232, 86, 13, 0.3);
-  font-weight: 600;
-  font-size: 1.1rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  border-radius: 12px;
-  width: fit-content;
-  margin: 0 auto;
+  font-size: 0.9em;
+  letter-spacing: 0.05em;
+}
+
+.bios__cursor {
+  display: inline-block;
+  width: 8px;
+  height: 1.1em;
+  background: #fff;
+  margin-left: 4px;
+  vertical-align: text-bottom;
+  animation: bios-blink 0.65s step-end infinite;
+}
+
+@keyframes bios-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.bios__start-btn {
+  padding: 10px 40px;
+  background: transparent;
+  color: #fff;
+  border: 1px solid #fff;
+  font-family: 'Courier New', 'Lucida Console', monospace;
+  font-size: 1rem;
+  font-weight: bold;
+  letter-spacing: 0.2em;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s ease-in-out;
+}
+
+.bios__start-btn:hover {
+  background: #fff;
+  color: #000;
+}
+
+.bios__start-btn:active {
+  transform: scale(0.96);
+}
+
+/* Footer */
+.bios__footer {
+  display: flex;
+  justify-content: space-between;
+  color: #444;
+  font-size: 0.75em;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* HUD Overlay */
+.hud {
+  position: fixed;
+  top: 28px;
+  left: 28px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  pointer-events: none;
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+
+.hud--visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.hud--hidden {
+  opacity: 0;
+  transform: translateX(-16px);
+}
+
+.hud__line {
+  display: inline-block;
+  width: fit-content;
+  padding: 6px 14px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  font-family: 'Courier New', 'Lucida Console', monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+  min-height: 1.4em;
+}
+
+.hud__name {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.hud__role {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.85rem;
+}
+
+.hud__clock {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  animation: fade-in 0.4s ease;
+}
+
+.hud__cursor {
+  display: inline-block;
+  width: 7px;
+  height: 1em;
+  background: #fff;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: bios-blink 0.65s step-end infinite;
+}
+
+/* Monitor hint */
+.monitor-hint {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 100px;
+  color: rgba(255, 255, 255, 0.7);
   font-family:
     'Inter',
     -apple-system,
     BlinkMacSystemFont,
     sans-serif;
-  overflow: hidden;
-}
-
-.loadingScreen__button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(232, 86, 13, 0.2), transparent);
-  transition: left 0.5s ease;
-}
-
-.loadingScreen__button:hover {
-  background: linear-gradient(135deg, rgba(232, 86, 13, 0.25) 0%, rgba(232, 86, 13, 0.1) 100%);
-  border-color: #e8560d;
-  box-shadow:
-    0 0 30px rgba(232, 86, 13, 0.2),
-    0 10px 40px -10px rgba(232, 86, 13, 0.3);
-  transform: translateY(-2px);
-}
-
-.loadingScreen__button:hover::before {
-  left: 100%;
-}
-
-.loadingScreen__button:active {
-  transform: translateY(0);
-  box-shadow: 0 0 20px rgba(232, 86, 13, 0.15);
-}
-
-.loadingScreen__button:disabled {
-  opacity: 0.3;
-  cursor: not-allowed;
-  transform: none;
-}
-
-/* Started State */
-.loadingScreen--started {
-  opacity: 0;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
   pointer-events: none;
+  animation: hint-fade 6s ease forwards;
+  white-space: nowrap;
 }
 
-.loadingScreen--started .loadingScreen__board {
-  opacity: 0;
-  transform: scale(0.95) translateY(-20px);
+.monitor-hint__icon {
+  font-size: 0.65rem;
+  opacity: 0.5;
+  animation: hint-pulse 2s ease-in-out infinite;
+}
+
+@keyframes hint-fade {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(12px);
+  }
+  15% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+@keyframes hint-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Back button */
+.back-button {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.8);
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  animation: fade-in 0.5s ease;
+}
+
+.back-button:hover {
+  background: rgba(0, 0, 0, 0.7);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #fff;
+}
+
+.back-button:active {
+  transform: scale(0.95);
+}
+
+.back-button__arrow {
+  font-size: 1.1em;
+  transition: transform 0.2s ease;
+}
+
+.back-button:hover .back-button__arrow {
+  transform: translateX(-2px);
 }
 
 .music_button {
