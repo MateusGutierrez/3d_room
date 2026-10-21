@@ -373,6 +373,15 @@ canvas:active {
   }
 }
 
+/* Iframe em tela cheia (telas pequenas, ver getZoomLayout) */
+.fullscreen-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background: #000;
+  transition: opacity 0.4s ease;
+}
+
 /* Back button */
 .back-button {
   position: fixed;
