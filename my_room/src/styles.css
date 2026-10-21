@@ -80,7 +80,7 @@ canvas:active {
 
 .bios__content {
   flex: 1;
-  overflow-y: auto;
+  /* overflow-y: auto; */
   scrollbar-width: none;
 }
 
@@ -335,7 +335,7 @@ canvas:active {
   font-size: 0.85rem;
   letter-spacing: 0.02em;
   pointer-events: none;
-  animation: hint-fade 6s ease forwards;
+  animation: hint-fade 15s ease forwards;
   white-space: nowrap;
 }
 
@@ -455,11 +455,7 @@ canvas:active {
 
 .music_button:hover {
   background-color: rgba(0, 0, 0, 0.42);
-  border: 1px solid #e8560d;
-}
-
-.music_button:hover .icon_sound {
-  animation: bellRing 0.9s both;
+  /* border: 1px solid #e8560d; */
 }
 
 /* bell ringing animation keyframes*/

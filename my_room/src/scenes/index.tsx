@@ -21,6 +21,7 @@ import {
   ZoomLayout,
   getZoomLayout,
 } from './screenLayout';
+import { BiPointer, BiArrowBack } from 'react-icons/bi';
 
 // Posições da câmera
 const CAM_FAR = { x: 40, y: 10, z: -80 }; // Posição inicial (longe, vista dramática)
@@ -210,14 +211,12 @@ export default function Room() {
 
       <OverlayHUD visible={start && !isZoomed} />
 
-      {/* Hint: clique no monitor */}
       {start && !isZoomed && (
         <div className="monitor-hint">
-          <span className="monitor-hint__icon">&#9654;</span>
           Click on the monitor to explore
+          <BiPointer />
         </div>
       )}
-
       {/* Telas pequenas: a câmera mergulha na tela do monitor e o iframe assume a janela inteira */}
       {isZoomed && zoomLayout.fullscreen && (
         <div
@@ -235,7 +234,7 @@ export default function Room() {
           onClick={() => setIsZoomed(false)}
           aria-label="Go back to room view"
         >
-          <span className="back-button__arrow">&#8592;</span> Back
+          <BiArrowBack /> Back
         </button>
       )}
 
