@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "cd my_room && npm install",
+  "buildCommand": "cd my_room && npm run build",
+  "outputDirectory": "my_room/build"
+}
