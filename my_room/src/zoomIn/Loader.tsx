@@ -16,6 +16,7 @@ const BOOT_LINES = [
 
 const RESOURCE_NAMES = [
   'room-draco.glb',
+  'monitor-frame.png',
   'preview.png',
   'city.hdr',
   'streetf_clideo.mp4',

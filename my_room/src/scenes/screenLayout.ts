@@ -16,11 +16,22 @@ export const SCREEN_WIDTH = 0.4965;
 export const SCREEN_HEIGHT = 0.231;
 export const SCREEN_CENTER: [number, number, number] = [0, 0.0019, -0.0094];
 
+// Moldura do monitor (public/img/monitor-frame.png), na frente da tela.
+// Cobre a tela e a borda rosa do modelo; o vão do meio é a área visível onde fica o iframe.
+// O PNG é gerado com estas medidas (scripts/generate-monitor-frame.py): mudou aqui, gere de novo.
+const FRAME_OVERHANG = 0.0035;
+const BEZEL_X = 0.0095;
+const BEZEL_Y = 0.0115;
+export const FRAME_WIDTH = SCREEN_WIDTH + 2 * FRAME_OVERHANG;
+export const FRAME_HEIGHT = SCREEN_HEIGHT + 2 * FRAME_OVERHANG;
+export const VIEW_WIDTH = FRAME_WIDTH - 2 * BEZEL_X;
+export const VIEW_HEIGHT = FRAME_HEIGHT - 2 * BEZEL_Y;
+
 export const IFRAME_URL = 'https://win32-run-chi.vercel.app/';
 
-// Tamanho do iframe em px, com o mesmo aspect da tela (≈2.15)
+// Tamanho do iframe em px, com o mesmo aspect do vão da moldura (≈2.27)
 export const IFRAME_WIDTH = 1100;
-export const IFRAME_HEIGHT = 512;
+export const IFRAME_HEIGHT = Math.round((IFRAME_WIDTH * VIEW_HEIGHT) / VIEW_WIDTH);
 
 // Quanto da janela a tela ocupa no zoom (0.92 = 92%, sobra uma margem)
 const ZOOM_FILL = 0.92;
@@ -60,23 +71,25 @@ export interface ZoomLayout {
 export function getZoomLayout(viewportWidth: number, viewportHeight: number): ZoomLayout {
   const aspect = viewportWidth / viewportHeight;
   const tanHalfFov = Math.tan(MathUtils.degToRad(CAMERA_FOV / 2));
-  const halfWidth = (SCREEN_WIDTH * ROOM_SCALE) / 2;
-  const halfHeight = (SCREEN_HEIGHT * ROOM_SCALE) / 2;
 
-  // Distância em que a altura cabe exatamente, e em que a largura cabe exatamente
-  const fitHeight = halfHeight / tanHalfFov;
-  const fitWidth = halfWidth / (tanHalfFov * aspect);
+  // Distância em que um retângulo (w × h) cabe exatamente: pela altura e pela largura
+  const fit = (width: number, height: number) => ({
+    height: (height * ROOM_SCALE) / 2 / tanHalfFov,
+    width: (width * ROOM_SCALE) / 2 / (tanHalfFov * aspect),
+  });
 
-  // "contain": a tela inteira aparece, com margem
-  const containDistance = Math.max(fitHeight, fitWidth) / ZOOM_FILL;
+  // "contain": o monitor inteiro (com a moldura) aparece, com margem
+  const frameFit = fit(FRAME_WIDTH, FRAME_HEIGHT);
+  const containDistance = Math.max(frameFit.height, frameFit.width) / ZOOM_FILL;
 
   // Tamanho que o iframe teria na tela, em px, nessa distância
   const visibleWidth = 2 * containDistance * tanHalfFov * aspect;
-  const screenPx = ((SCREEN_WIDTH * ROOM_SCALE) / visibleWidth) * viewportWidth;
+  const screenPx = ((VIEW_WIDTH * ROOM_SCALE) / visibleWidth) * viewportWidth;
   const fullscreen = screenPx / IFRAME_WIDTH < MIN_READABLE_SCALE;
 
-  // Em tela cheia, a câmera "mergulha" até a tela cobrir a janela, e aí o iframe assume
-  const distance = fullscreen ? Math.min(fitHeight, fitWidth) : containDistance;
+  // Em tela cheia, a câmera "mergulha" até o vão da tela cobrir a janela, e aí o iframe assume
+  const viewFit = fit(VIEW_WIDTH, VIEW_HEIGHT);
+  const distance = fullscreen ? Math.min(viewFit.height, viewFit.width) : containDistance;
 
   const { x, y, z } = SCREEN_CENTER_WORLD;
   return {
