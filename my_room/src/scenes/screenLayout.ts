@@ -16,7 +16,7 @@ export const SCREEN_WIDTH = 0.4965;
 export const SCREEN_HEIGHT = 0.231;
 export const SCREEN_CENTER: [number, number, number] = [0, 0.0019, -0.0094];
 
-export const IFRAME_URL = 'http://localhost:3001/';
+export const IFRAME_URL = 'https://win32-run-chi.vercel.app/';
 
 // Tamanho do iframe em px, com o mesmo aspect da tela (≈2.15)
 export const IFRAME_WIDTH = 1100;
