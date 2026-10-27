@@ -3,5 +3,17 @@
   "framework": null,
   "installCommand": "cd my_room && npm install",
   "buildCommand": "cd my_room && npm run build",
-  "outputDirectory": "my_room/build"
+  "outputDirectory": "my_room/build",
+  "headers": [
+    {
+      "source": "/(.*)\\.bundle\\.js",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    },
+    {
+      "source": "/(models|img|videos|mp3|hdr|draco)/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=86400, stale-while-revalidate=604800" }
+      ]
+    }
+  ]
 }

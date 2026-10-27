@@ -17,47 +17,14 @@ const BOOT_LINES = [
 const RESOURCE_NAMES = [
   'room-draco.glb',
   'monitor-frame.png',
-  'preview.png',
-  'city.hdr',
+  'preview-xp.webp',
+  'city-256.hdr',
   'streetf_clideo.mp4',
   'lofi.mp3',
 ];
 
-function useTypewriter(text: string, speed = 30, startDelay = 0) {
-  const [displayed, setDisplayed] = useState('');
-  const [done, setDone] = useState(false);
-
-  useEffect(() => {
-    if (!text) {
-      setDisplayed('');
-      setDone(true);
-      return;
-    }
-
-    let i = 0;
-    let timeout: ReturnType<typeof setTimeout>;
-
-    const startTimeout = setTimeout(() => {
-      const type = () => {
-        if (i < text.length) {
-          setDisplayed(text.slice(0, i + 1));
-          i++;
-          timeout = setTimeout(type, speed);
-        } else {
-          setDone(true);
-        }
-      };
-      type();
-    }, startDelay);
-
-    return () => {
-      clearTimeout(startTimeout);
-      clearTimeout(timeout);
-    };
-  }, [text, speed, startDelay]);
-
-  return { displayed, done };
-}
+// Pausa antes das linhas de boot (o cabeçalho já aparece pronto, vindo do index.html)
+const BOOT_START_DELAY = 600;
 
 export const LoadingScreen = ({ started, onStarted }: Props) => {
   const { progress, active } = useProgress();
@@ -74,18 +41,12 @@ export const LoadingScreen = ({ started, onStarted }: Props) => {
     year: 'numeric',
   });
 
-  const { displayed: headerText, done: headerDone } = useTypewriter(
-    'Mateus, Inc. Portfolio BIOS v1.0',
-    25,
-    300
-  );
-
   // Boot sequence lines
   useEffect(() => {
-    if (!headerDone || bootStarted.current) return;
+    if (bootStarted.current) return;
     bootStarted.current = true;
 
-    let totalDelay = 0;
+    let totalDelay = BOOT_START_DELAY;
     BOOT_LINES.forEach((line, i) => {
       totalDelay += line.delay;
       setTimeout(() => {
@@ -93,7 +54,7 @@ export const LoadingScreen = ({ started, onStarted }: Props) => {
         if (i === BOOT_LINES.length - 1) setBootDone(true);
       }, totalDelay);
     });
-  }, [headerDone]);
+  }, []);
 
   // Resource loading logs based on real progress
   useEffect(() => {
@@ -139,13 +100,17 @@ export const LoadingScreen = ({ started, onStarted }: Props) => {
     <div className={`bios ${started ? 'bios--started' : ''}`}>
       <div className="bios__screen">
         <div className="bios__content" ref={logRef}>
-          {/* Header */}
+          {/* Header: igual à marcação estática do public/index.html (é o LCP da página) */}
           <div className="bios__header">
-            <span className="bios__title">{headerText}</span>
-            {headerDone && <span className="bios__date">Released: {today}</span>}
+            <div className="bios__title">
+              Mateus, Inc. Portfolio BIOS v1.0
+              <br />
+              <span className="bios__subtitle">Copyright (C) Mateus Maia Gutierrez</span>
+            </div>
+            <span className="bios__date">Released: {today}</span>
           </div>
 
-          {headerDone && <div className="bios__separator" />}
+          <div className="bios__separator" />
 
           {/* Boot lines */}
           {bootLines.map((line, i) => (

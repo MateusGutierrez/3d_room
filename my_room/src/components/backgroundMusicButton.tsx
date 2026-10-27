@@ -19,7 +19,8 @@ export function BackgroundMusic() {
   return (
     <>
       {/* Elemento de áudio */}
-      <audio ref={audioRef} loop>
+      {/* preload none: o mp3 (1.5 MB) só baixa quando a pessoa liga a música */}
+      <audio ref={audioRef} loop preload="none">
         <source src="./mp3/lofi.mp3" type="audio/mp3" />
       </audio>
 

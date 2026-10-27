@@ -1,5 +1,5 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Environment, OrbitControls } from '@react-three/drei';
+import { Environment, OrbitControls, useGLTF } from '@react-three/drei';
 import { Level } from './Level';
 import { Sudo } from './Sudo';
 import { Camera } from './Camera';
@@ -23,10 +23,19 @@ import {
 } from './screenLayout';
 import { BiPointer, BiArrowBack } from 'react-icons/bi';
 
+// O modelo usa compressão Draco. O decoder fica em public/draco (o padrão do drei busca no CDN do Google)
+useGLTF.setDecoderPath('./draco/');
+
 // Posições da câmera
 const CAM_FAR = { x: 40, y: 10, z: -80 }; // Posição inicial (longe, vista dramática)
-const CAM_IDLE = { x: 10, y: -4, z: -50 }; // Posição normal (orbiting)
+const CAM_IDLE = { x: 40.64, y: 0.42, z: -43.87 }; // Posição normal (orbiting): início da órbita
 const CAM_TARGET: [number, number, number] = [10, -4, -2]; // Para onde a câmera olha no modo orbit
+// A órbita gira só na horizontal, na altura do CAM_IDLE: o ângulo vertical (polar) fica travado
+// no ângulo dele em relação ao alvo (~85°, um pouco de cima). Mudou o CAM_IDLE, ele acompanha.
+const ORBIT_POLAR = Math.acos(
+  (CAM_IDLE.y - CAM_TARGET[1]) /
+    Math.hypot(CAM_IDLE.x - CAM_TARGET[0], CAM_IDLE.y - CAM_TARGET[1], CAM_IDLE.z - CAM_TARGET[2])
+);
 // A posição de zoom não é fixa: vem de getZoomLayout(), calculada pelo tamanho da janela
 
 function useViewportSize() {
@@ -149,8 +158,8 @@ function CameraController({
       enablePan={false}
       enableDamping
       dampingFactor={0.05}
-      minPolarAngle={Math.PI / 2}
-      maxPolarAngle={Math.PI / 2}
+      minPolarAngle={ORBIT_POLAR}
+      maxPolarAngle={ORBIT_POLAR}
       minAzimuthAngle={Math.PI / 6}
       maxAzimuthAngle={Math.PI / 1.001}
       target={CAM_TARGET}
@@ -175,7 +184,6 @@ export default function Room() {
   return (
     <>
       <Canvas
-        shadows
         camera={{ position: [CAM_FAR.x, CAM_FAR.y, CAM_FAR.z], fov: CAMERA_FOV }}
         onPointerMissed={() => setIsZoomed(false)}
       >
@@ -204,7 +212,8 @@ export default function Room() {
               />
               <Game />
             </group>
-            <Environment preset="city" />
+            {/* Mesmo HDR do preset "city", reduzido para 256px e servido daqui (o preset baixa 1.5 MB do GitHub) */}
+            <Environment files="./hdr/city-256.hdr" />
           </group>
         </Suspense>
       </Canvas>

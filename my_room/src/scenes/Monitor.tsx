@@ -43,7 +43,7 @@ export function Monitor({ setHovered, setIsZoomed, isZoomed, zoomSettled, fullsc
   const { nodes, materials } = useGLTF('./models/room-draco.glb') as unknown as IGLTF;
   const [iframeMounted, setIframeMounted] = useState(false);
 
-  const screenTexture = useTexture('./img/preview-xp.png');
+  const screenTexture = useTexture('./img/preview-xp.webp');
   useMemo(() => {
     screenTexture.anisotropy = 16;
     screenTexture.colorSpace = SRGBColorSpace;
