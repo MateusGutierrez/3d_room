@@ -29,14 +29,16 @@ export const VIEW_HEIGHT = FRAME_HEIGHT - 2 * BEZEL_Y;
 
 export const IFRAME_URL = 'https://win32-run-chi.vercel.app/';
 
-// Tamanho do iframe em px, com o mesmo aspect do vão da moldura (≈2.27)
-export const IFRAME_WIDTH = 1100;
-export const IFRAME_HEIGHT = Math.round((IFRAME_WIDTH * VIEW_HEIGHT) / VIEW_WIDTH);
+// O iframe é renderizado no tamanho exato que a tela ocupa na janela (1 px do iframe = 1 px
+// na tela). Se ele fosse menor e o 3D o ampliasse, o texto do XP ficaria borrado.
+// Abaixo dessa altura o desktop do XP fica apertado demais: usa tela cheia
+const MIN_IFRAME_HEIGHT = 450;
 
 // Quanto da janela a tela ocupa no zoom (0.92 = 92%, sobra uma margem)
 const ZOOM_FILL = 0.92;
-// Abaixo dessa escala (px na tela / px do iframe) o texto fica pequeno demais: usa tela cheia
-const MIN_READABLE_SCALE = 0.7;
+
+// Medidas pares: o drei centraliza o iframe com translate(-50%,-50%), e meio pixel borra o texto
+const even = (value: number) => 2 * Math.round(value / 2);
 
 // Centro da tela em coordenadas do mundo (o resultado de aplicar os transforms acima)
 export const SCREEN_CENTER_WORLD = new Vector3(...SCREEN_CENTER).applyMatrix4(
@@ -62,6 +64,9 @@ export interface ZoomLayout {
   target: { x: number; y: number; z: number };
   /** true = iframe em tela cheia; false = iframe dentro do monitor 3D */
   fullscreen: boolean;
+  /** Tamanho do iframe dentro do monitor, em px (igual ao tamanho que ele ocupa na tela) */
+  iframeWidth: number;
+  iframeHeight: number;
 }
 
 /**
@@ -85,7 +90,9 @@ export function getZoomLayout(viewportWidth: number, viewportHeight: number): Zo
   // Tamanho que o iframe teria na tela, em px, nessa distância
   const visibleWidth = 2 * containDistance * tanHalfFov * aspect;
   const screenPx = ((VIEW_WIDTH * ROOM_SCALE) / visibleWidth) * viewportWidth;
-  const fullscreen = screenPx / IFRAME_WIDTH < MIN_READABLE_SCALE;
+  const iframeWidth = even(screenPx);
+  const iframeHeight = even((screenPx * VIEW_HEIGHT) / VIEW_WIDTH);
+  const fullscreen = iframeHeight < MIN_IFRAME_HEIGHT;
 
   // Em tela cheia, a câmera "mergulha" até o vão da tela cobrir a janela, e aí o iframe assume
   const viewFit = fit(VIEW_WIDTH, VIEW_HEIGHT);
@@ -96,5 +103,7 @@ export function getZoomLayout(viewportWidth: number, viewportHeight: number): Zo
     cameraPosition: { x, y, z: z - distance },
     target: { x, y, z },
     fullscreen,
+    iframeWidth,
+    iframeHeight,
   };
 }

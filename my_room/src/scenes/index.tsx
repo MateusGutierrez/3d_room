@@ -68,6 +68,10 @@ function CameraController({
   const directionRef = useRef(1);
   const rotationSpeedRef = useRef(0.35);
   const [hasEntered, setHasEntered] = useState(false);
+  // Travas da órbita (ângulo vertical fixo, giro limitado). Ficam desligadas do início do zoom
+  // até a câmera terminar de voltar: no zoom a câmera fica de frente pra tela (90°), e com a
+  // trava ligada o OrbitControls a puxaria de volta pros ~85° depois do tween (um 2º movimento).
+  const [orbitLocked, setOrbitLocked] = useState(true);
   // Ref para o tween de zoom usar o layout mais recente sem reiniciar a cada resize
   const zoomLayoutRef = useRef(zoomLayout);
   zoomLayoutRef.current = zoomLayout;
@@ -75,7 +79,7 @@ function CameraController({
   useFrame(() => {
     TWEEN.update();
 
-    if (controlsRef.current && !isZoomed && hasEntered) {
+    if (controlsRef.current && orbitLocked && hasEntered) {
       const azimuthAngle = controlsRef.current.getAzimuthalAngle();
 
       if (azimuthAngle >= Math.PI / 1.001 || azimuthAngle <= Math.PI / 6) {
@@ -111,6 +115,7 @@ function CameraController({
     if (!hasEntered) return;
 
     onZoomSettled(false); // esconde o iframe assim que o movimento começa
+    if (isZoomed) setOrbitLocked(false);
 
     const layout = zoomLayoutRef.current;
     const duration = isZoomed ? 1800 : 1200;
@@ -128,7 +133,9 @@ function CameraController({
       .to(isZoomed ? layout.cameraPosition : CAM_IDLE, duration)
       .easing(TWEEN.Easing.Quintic.InOut)
       .onComplete(() => {
-        if (isZoomed) onZoomSettled(true); // só mostra o iframe com a câmera parada
+        if (isZoomed)
+          onZoomSettled(true); // só mostra o iframe com a câmera parada
+        else setOrbitLocked(true); // de volta ao CAM_IDLE, que já respeita as travas
       })
       .start();
 
@@ -149,7 +156,7 @@ function CameraController({
   return (
     <OrbitControls
       ref={controlsRef}
-      autoRotate={!isZoomed && hasEntered}
+      autoRotate={orbitLocked && hasEntered}
       // Não usar `enabled={false}`: o drei deixa de chamar controls.update() e a câmera
       // para de olhar pro target durante o tween (fica torta). Só bloqueia a rotação manual.
       enableRotate={!isZoomed}
@@ -158,10 +165,10 @@ function CameraController({
       enablePan={false}
       enableDamping
       dampingFactor={0.05}
-      minPolarAngle={ORBIT_POLAR}
-      maxPolarAngle={ORBIT_POLAR}
-      minAzimuthAngle={Math.PI / 6}
-      maxAzimuthAngle={Math.PI / 1.001}
+      minPolarAngle={orbitLocked ? ORBIT_POLAR : 0}
+      maxPolarAngle={orbitLocked ? ORBIT_POLAR : Math.PI}
+      minAzimuthAngle={orbitLocked ? Math.PI / 6 : -Infinity}
+      maxAzimuthAngle={orbitLocked ? Math.PI / 1.001 : Infinity}
       target={CAM_TARGET}
     />
   );
@@ -209,6 +216,8 @@ export default function Room() {
                 isZoomed={isZoomed}
                 zoomSettled={zoomSettled}
                 fullscreen={zoomLayout.fullscreen}
+                iframeWidth={zoomLayout.iframeWidth}
+                iframeHeight={zoomLayout.iframeHeight}
               />
               <Game />
             </group>

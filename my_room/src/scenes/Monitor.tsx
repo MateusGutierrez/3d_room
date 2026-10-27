@@ -6,9 +6,7 @@ import { IGLTF } from './interface';
 import {
   FRAME_HEIGHT,
   FRAME_WIDTH,
-  IFRAME_HEIGHT,
   IFRAME_URL,
-  IFRAME_WIDTH,
   SCREEN_CENTER,
   SCREEN_FRAME_POSITION,
   SCREEN_FRAME_ROTATION,
@@ -18,10 +16,6 @@ import {
 
 const SCREEN_ON = new Color('#ffffff');
 const SCREEN_OFF = new Color('#000000');
-
-// O drei converte px em unidades 3D por `distanceFactor / 400 * scale`,
-// então essa escala faz o iframe cobrir exatamente o vão da moldura.
-const IFRAME_SCALE = (VIEW_WIDTH * 400) / IFRAME_WIDTH;
 
 // Moldura, reflexo e iframe ficam um pouco à frente da tela (+z aponta pra câmera neste referencial)
 const [CENTER_X, CENTER_Y, CENTER_Z] = SCREEN_CENTER;
@@ -37,9 +31,20 @@ interface Props {
   zoomSettled: boolean;
   /** Em tela cheia o iframe é renderizado fora do 3D (index.tsx), então aqui não monta */
   fullscreen: boolean;
+  /** Tamanho do iframe em px, vindo de getZoomLayout() */
+  iframeWidth: number;
+  iframeHeight: number;
 }
 
-export function Monitor({ setHovered, setIsZoomed, isZoomed, zoomSettled, fullscreen }: Props) {
+export function Monitor({
+  setHovered,
+  setIsZoomed,
+  isZoomed,
+  zoomSettled,
+  fullscreen,
+  iframeWidth,
+  iframeHeight,
+}: Props) {
   const { nodes, materials } = useGLTF('./models/room-draco.glb') as unknown as IGLTF;
   const [iframeMounted, setIframeMounted] = useState(false);
 
@@ -95,6 +100,10 @@ export function Monitor({ setHovered, setIsZoomed, isZoomed, zoomSettled, fullsc
     material.color.lerp(target, 1 - Math.exp(-delta * 12));
   });
 
+  // O drei converte px em unidades 3D por `distanceFactor / 400 * scale`,
+  // então essa escala faz o iframe cobrir exatamente o vão da moldura.
+  const iframeScale = (VIEW_WIDTH * 400) / iframeWidth;
+
   // Monta o iframe apenas na primeira vez que zoom é ativado, e mantém montado depois
   if (isZoomed && !iframeMounted) {
     setIframeMounted(true);
@@ -144,7 +153,7 @@ export function Monitor({ setHovered, setIsZoomed, isZoomed, zoomSettled, fullsc
           transform
           // Mesmo plano da moldura: em perspectiva, o vão e o iframe ficam sempre do mesmo tamanho
           position={[CENTER_X, CENTER_Y, FRAME_Z]}
-          scale={IFRAME_SCALE}
+          scale={iframeScale}
           distanceFactor={1}
           wrapperClass="wrapper"
           zIndexRange={[10, 0]}
@@ -154,8 +163,8 @@ export function Monitor({ setHovered, setIsZoomed, isZoomed, zoomSettled, fullsc
             <div
               className="wrapper"
               style={{
-                width: IFRAME_WIDTH,
-                height: IFRAME_HEIGHT,
+                width: iframeWidth,
+                height: iframeHeight,
                 borderRadius: 0,
                 opacity: zoomSettled ? 1 : 0,
                 pointerEvents: zoomSettled ? 'auto' : 'none',
